@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)
 
     resnet = models.resnet50(weights=None)
-    model.fc = nn.Sequential(nn.Linear(2048, 65))
+    resnet.fc = nn.Sequential(nn.Linear(2048, 65))
     resnet = resnet.to(device)
     learner = BYOL(
         resnet,
