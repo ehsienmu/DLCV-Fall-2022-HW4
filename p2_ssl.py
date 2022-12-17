@@ -44,7 +44,7 @@ if __name__ == '__main__':
     training_csv_path = './hw4_data/mini/train.csv'
     batch_size = 4
     num_epoch = 500
-    ckpt_save_path = './byol_ckpt_new'
+    ckpt_save_path = './p2_byol_ckpt'
     os.makedirs(ckpt_save_path, exist_ok=True)
     with open('./mini_translate.json', 'r') as f:
         mini_translate_dict = json.load(f)

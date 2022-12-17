@@ -679,8 +679,8 @@ if __name__=='__main__':
     if args.render_test or args.render_train or args.render_video or args.render_test_dlcv:
         if args.ft_path:
             ckpt_path = args.ft_path
-        # elif args.render_test_dlcv:
-        #     ckpt_path = args.render_test_dlcv_model_file
+        elif args.render_test_dlcv:
+            ckpt_path = args.render_test_dlcv_model_file
         else:
             ckpt_path = os.path.join(cfg.basedir, cfg.expname, 'fine_last.tar')
         ckpt_name = ckpt_path.split('/')[-1][:-4]

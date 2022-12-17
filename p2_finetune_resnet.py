@@ -170,14 +170,14 @@ def train(model, train_loader, val_loader, num_epoch, early_stop, log_path, save
         print('time = {:.4f} MIN {:.4f} SEC, total time = {:.4f} Min {:.4f} SEC '.format(elp_time // 60, elp_time % 60, (end_time-start_train) // 60, (end_time-start_train) % 60))
         print(f'training loss : {train_loss:.4f} ', f' train acc = {train_acc:.4f}' )
         print(f'val loss : {val_loss:.4f} ', f' val acc = {val_acc:.4f}' )
-        print('========================\n')
+        # print('========================\n')
 
         with open(log_path, 'a') as f :
             f.write(f'epoch = {i}\n', )
             f.write('time = {:.4f} MIN {:.4f} SEC, total time = {:.4f} Min {:.4f} SEC\n'.format(elp_time // 60, elp_time % 60, (end_time-start_train) // 60, (end_time-start_train) % 60))
             f.write(f'training loss : {train_loss}  train acc = {train_acc}\n' )
             f.write(f'val loss : {val_loss}  val acc = {val_acc}\n' )
-            f.write('============================\n')
+            # f.write('============================\n')
 
         # save model for every epoch 
         torch.save(model.state_dict(), os.path.join(save_path, f'resnet_epoch_{i}.pt'))
@@ -185,8 +185,14 @@ def train(model, train_loader, val_loader, num_epoch, early_stop, log_path, save
         # save the best model if it gain performance on validation set
         if  val_acc > best_acc:
             best_acc = val_acc
+            with open(log_path, 'a') as f :
+                f.write(f'save best at epoch {i}!\n')
+            print(f'save best at epoch {i}!\n')
             torch.save(model.state_dict(), os.path.join(save_path, 'best_resnet_model.pt'))
             early_stop_cnt = 0
+        with open(log_path, 'a') as f :
+            f.write('============================\n')
+        print('========================\n')
         if early_stop_cnt > early_stop:
             print('early stop!')
             break
@@ -230,14 +236,14 @@ if __name__ == '__main__':
         office_translate_dict = json.load(f)
     
     batch_size = 4
-    num_epoch = 500
+    num_epoch = 50
     early_stop = 30
 
     model_name = args.save_dir_name # 'ssl_resnet'
     ckpt_save_path = './' + model_name + '_ckpt'
     os.makedirs('./acc_log', exist_ok=True)
     os.makedirs(ckpt_save_path, exist_ok=True)
-    log_path = os.path.join('./acc_log', 'acc_' + model_name + '_.log')
+    log_path = os.path.join('./acc_log', 'acc_' + model_name + '.log')
 
     train_set = CustomImageDataset(data_folder_path=training_data_path, csv_file_path=training_csv_path, translate_dict=office_translate_dict, have_label=True, transform=tfm)
     val_set = CustomImageDataset(data_folder_path=val_data_path, csv_file_path=val_csv_path, translate_dict=office_translate_dict, have_label=True, transform=tfm)
@@ -246,8 +252,17 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)
 
     resnet = models.resnet50(weights=None)
-    load_parameters(resnet, backbone_filename)
     resnet.fc = nn.Sequential(nn.Linear(2048, 65))
+
+    load_parameters(resnet, backbone_filename)
+
+    if args.freeze:
+        print('Freeze backbone!')
+        for param in resnet.parameters():
+            param.requires_grad = False
+        # for param in resnet.features[-1].parameters():
+        #     param.resnet = True
+        resnet.fc.requires_grad_(True)
 
     resnet = resnet.to(device)
 
