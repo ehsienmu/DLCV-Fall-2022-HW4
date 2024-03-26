@@ -1,6 +1,18 @@
 # DLCV-Fall-2022-HW4
+## Problem list
 
+**Problem 1:** 3D Novel View Synthesis (50%) [hw4_data/hotdog]
+
+**Problem 2:** Self-supervised Pre-training for Image Classification (50%) [hw4_data/mini], [hw4_data/office]
+
+## Slides
 Please click [this link](https://docs.google.com/presentation/d/171DwrrzYUenLnyev_NyZg0c19lgqk4q42iA_ptLZjDk/edit?usp=sharing) to view the slides of HW4
+
+## Results
+
+
+Please click [hw4_r10921a36.pdf](https://github.com/ehsienmu/DLCV-Fall-2022-HW4/blob/main/hw4_r10921a36.pdf)
+
 
 # Usage
 
